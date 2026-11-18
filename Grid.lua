@@ -9,6 +9,7 @@ for i = 1, 40 do RAID[i] = "raid" .. i end
 -- While a member shows: only its own unit events (### frame:RegisterUnitEvent).
 local UNIT_EVENTS = { "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "UNIT_DISPLAYPOWER",
     "UNIT_NAME_UPDATE", "UNIT_CONNECTION", "UNIT_IN_RANGE_UPDATE", "UNIT_AURA_DELTA" }
+local GROUP_EVENTS = { "PARTY_LEADER_CHANGED", "RAID_TARGET_UPDATE", "PLAYER_TARGET_CHANGED" }
 
 local grid = CreateFrame("Frame", "RaidFramesMain", UIParent)
 grid:SetMovable(true)
@@ -19,6 +20,9 @@ grid:Hide()
 local buttons, count = {}, {} -- buttons[g][m]; members per group in this pass
 local units, byUnit = {}, {}   -- the shown members' tokens; token -> button
 local test, owned, pending
+-- What the last pass registered and laid out. A roster pass (many a second in
+-- a battleground) does both again only when they change; a page row forgets them.
+local listened, fitted
 
 -- Every button made so far, as fn(button, group, member).
 local function Each(fn)
@@ -67,12 +71,16 @@ local function Assign(g, unit, name, class, rank, online)
 end
 
 -- Unit events for exactly the shown members; the group's own events only in a group.
-local function Listen()
+-- `key` names the set of tokens: the raid's are raid1 to raidN, the party's
+-- player and party1 to partyN.
+local function Listen(key)
+    if key == listened then return end
+    listened = key
     local on = #units > 0
     for _, e in ipairs(UNIT_EVENTS) do
         if on then grid:RegisterUnitEvent(e, unpack(units)) else grid:UnregisterEvent(e) end
     end
-    for _, e in ipairs({ "PARTY_LEADER_CHANGED", "RAID_TARGET_UPDATE", "PLAYER_TARGET_CHANGED" }) do
+    for _, e in ipairs(GROUP_EVENTS) do
         if on and (db.aggro or e ~= "PLAYER_TARGET_CHANGED") then grid:RegisterEvent(e) else grid:UnregisterEvent(e) end
     end
     if on and db.aggro then grid:RegisterUnitEvent("UNIT_TARGET", "target") else grid:UnregisterEvent("UNIT_TARGET") end
@@ -80,6 +88,8 @@ end
 
 -- The holder's size and scale, its top left kept on screen through a scale change.
 local function Fit(columns, rows)
+    if fitted == columns * 10 + rows then return end
+    fitted = columns * 10 + rows
     local old, left, top = grid:GetScale(), grid:GetLeft(), grid:GetTop()
     grid:SetScale(db.scale)
     grid:ClearAllPoints()
@@ -112,13 +122,15 @@ local function Roster()
             Assign(1, unit, UnitName(unit), nil, UnitIsPartyLeader(unit) and 2 or 0, UnitIsConnected(unit) and true or false)
         end
     end
-    local rows = 0
-    Each(function(b, g, m)
-        if m > count[g] then Clear(b) end
-        rows = math.max(rows, count[g])
-    end)
-    Listen()
-    Fit(raid > 0 and 8 or 1, rows)
+    local columns, rows = 1, 0 -- as many columns as the last group in use
+    for g, list in pairs(buttons) do
+        for m, b in pairs(list) do if m > count[g] then Clear(b) end end
+    end
+    for g = 1, 8 do
+        if count[g] > 0 then columns, rows = g, math.max(rows, count[g]) end
+    end
+    Listen(raid > 0 and #units or -#units)
+    Fit(columns, rows)
     grid:SetShown(rows > 0)
 end
 
@@ -207,7 +219,7 @@ function R.apply.enabled()
         end
         return Roster()
     end
-    test = nil
+    test, listened, fitted = nil, nil, nil
     grid:UnregisterAllEvents()
     Each(Clear)
     table.wipe(units)
@@ -228,13 +240,14 @@ function R.Test(again)
         end
     end
     if not test then return Roster() end
-    Listen()
+    Listen(0)
     Fit(8, 5)
     grid:Show()
 end
 
 -- Every other row: each button laid out and drawn again.
 local function Redraw()
+    listened, fitted = nil, nil
     Each(function(b, g, m) R.Size(b); Spot(b, g, m) end)
     if test then return R.Test(true) end
     Roster()

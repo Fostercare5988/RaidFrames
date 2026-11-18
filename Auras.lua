@@ -123,13 +123,13 @@ function R.Place(b)
         local icon = b.icons[i]
         if icon:IsShown() then icon:Hide(); icon.expires = nil; icon.cd:Clear() end
     end
-    local more = nb + nd - sb - sd
-    if b.moreN ~= more then
-        b.moreN = more
+    local more, at = nb + nd - sb - sd, 2 + sb * (bs + GAP)
+    if b.moreAt ~= at then
+        b.moreAt = at
         b.more:ClearAllPoints()
-        b.more:SetPoint("BOTTOMLEFT", b.health, "BOTTOMLEFT", 2 + sb * (bs + GAP), 2)
-        b.more:SetText(more > 0 and "+" .. more or "")
+        b.more:SetPoint("BOTTOMLEFT", b.health, "BOTTOMLEFT", at, 2)
     end
+    if b.moreN ~= more then b.moreN = more; b.more:SetText(more > 0 and "+" .. more or "") end
 end
 
 -- Read the member's auras again and lay them out.
@@ -141,7 +141,18 @@ end
 
 -- A refresh or a new stack count rewrites its own record (it keeps its place
 -- in the order); a new or lost aura reads the member again (### UNIT_AURA_DELTA event).
+-- Both lists are searched: a debuff the game parks in a buff slot is in the
+-- buffs, but its AuraData says harmful (### AuraData table shape, isHarmful).
 local buf = {}
+local function Update(list, d)
+    for j = 1, list.n do
+        local a = list[j]
+        if a.id == d.spellId and a.source == d.sourceUnit then
+            a.stacks, a.duration, a.expires = d.applications, d.duration, d.expirationTime
+            return true
+        end
+    end
+end
 function R.AuraDelta(b, info)
     local ids = info.updatedAuraInstanceIDs
     if info.isFullUpdate or info.addedAuraInstanceIDs or info.removedAuraInstanceIDs or not ids then
@@ -149,14 +160,7 @@ function R.AuraDelta(b, info)
     end
     for i = 1, #ids do
         local d = C_UnitAuras.GetAuraDataByAuraInstanceID(b.unit, ids[i], buf)
-        local list = d and (d.isHelpful and b.buffs or b.debuffs)
-        for j = 1, list and list.n or 0 do
-            local a = list[j]
-            if a.id == d.spellId and a.source == d.sourceUnit then
-                a.stacks, a.duration, a.expires = d.applications, d.duration, d.expirationTime
-                break
-            end
-        end
+        if d and not Update(b.buffs, d) then Update(b.debuffs, d) end
     end
     R.Place(b)
 end
