@@ -254,7 +254,9 @@ handle:Hide()
 handle:SetScript("OnMouseDown", function() grid:StartMoving() end)
 handle:SetScript("OnMouseUp", function() grid:StopMovingOrSizing() end)
 handle:SetScript("OnEvent", function()
-    local held = IsShiftKeyDown() and IsControlKeyDown() and true or false
+    -- The left and right reads: the merged IsShiftKeyDown lags this event.
+    local held = (IsLeftShiftKeyDown() or IsRightShiftKeyDown())
+        and (IsLeftControlKeyDown() or IsRightControlKeyDown()) and true or false
     if not held then grid:StopMovingOrSizing() end -- the keys let go while dragging
     handle:SetShown(held)
 end)
