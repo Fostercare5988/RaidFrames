@@ -1,10 +1,10 @@
--- FostercareRaid: one grid for party and raid.
+-- RaidFrames: one grid for party and raid.
 -- Doc headings are ClassicAPI's docs/API.md; "FrameXML" is the client's own code.
-if not CLASSIC_API_VERSION then error("FostercareRaid needs ClassicAPI.", 0) end
+if not CLASSIC_API_VERSION then error("RaidFrames needs ClassicAPI.", 0) end
 
 local _, R = ...
-FostercareRaidDB = FostercareRaidDB or {} -- restored first: LoadSavedVariablesFirst
-local db = FostercareRaidDB
+RaidFramesDB = RaidFramesDB or {} -- restored first: LoadSavedVariablesFirst
+local db = RaidFramesDB
 
 -- The page's switches and sliders, filled in here: the grid starts before the
 -- Settings window registers the page.

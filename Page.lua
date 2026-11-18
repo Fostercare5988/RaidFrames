@@ -1,8 +1,8 @@
--- The FostercareRaid page in ClassicAPI's Settings window (AddOn Options, or /fraid).
+-- The RaidFrames page in ClassicAPI's Settings window (AddOn Options, or /fraid).
 local _, R = ...
 if not R.apply then return end
 
-local db = FostercareRaidDB
+local db = RaidFramesDB
 local category
 
 -- In play order: a section header, then its rows. A slider is { key, name, tip, low, high, step };
@@ -29,7 +29,7 @@ local PAGE = {
 
 SettingsRegistrar:AddRegistrant(function()
     local layout
-    category, layout = Settings.RegisterVerticalLayoutCategory("FostercareRaid")
+    category, layout = Settings.RegisterVerticalLayoutCategory("RaidFrames")
     local rows = {}
     for _, row in ipairs(PAGE) do
         if type(row) == "string" then
@@ -37,7 +37,7 @@ SettingsRegistrar:AddRegistrant(function()
         else
             local key, name, tip, low, high, step = row[1], row[2], row[3], row[4], row[5], row[6]
             local kind = low and Settings.VarType.Number or Settings.VarType.Boolean
-            local setting = Settings.RegisterAddOnSetting(category, "FostercareRaid_" .. key, key, db, kind, name,
+            local setting = Settings.RegisterAddOnSetting(category, "RaidFrames_" .. key, key, db, kind, name,
                 R.DEFAULTS[key])
             setting:SetValueChangedCallback(R.apply[key])
             local init
@@ -62,7 +62,7 @@ SettingsRegistrar:AddRegistrant(function()
     Settings.RegisterAddOnCategory(category)
 end)
 
-SLASH_FOSTERCARERAID1 = "/fraid"
-SlashCmdList.FOSTERCARERAID = function()
+SLASH_RAIDFRAMES1 = "/fraid"
+SlashCmdList.RAIDFRAMES = function()
     if category then Settings.OpenToCategory(category:GetID()) end
 end

@@ -1,4 +1,4 @@
-# FostercareRaid
+# RaidFrames
 
 One grid for party and raid in World of Warcraft 1.12.1, in place of the party
 frames and the game's own group frames.
@@ -20,12 +20,12 @@ Ctrl+Shift moves the grid.
 
 ## Requirements
 
-WoW 1.12.1 (build 5875) with **ClassicAPI** loaded.
+WoW 1.12.1 (build 5875) with **[ClassicAPI](https://github.com/brues-code/ClassicAPI)** loaded.
 
 ## Installation
 
-Download `FostercareRaid.zip` from the
-[latest release](https://github.com/Fostercare5988/FostercareRaid/releases/latest),
+Download `RaidFrames.zip` from the
+[latest release](https://github.com/Fostercare5988/RaidFrames/releases/latest),
 extract it into `Interface/AddOns` and enable it in the game's AddOns list. The
-folder must contain `Interface/AddOns/FostercareRaid/FostercareRaid.toc`.
-It replaces the party and raid frames of FostercareTweaks before 1.0.0.
+folder must contain `Interface/AddOns/RaidFrames/RaidFrames.toc`.
+It replaces the party and raid frames of Tweaks before 1.0.0.

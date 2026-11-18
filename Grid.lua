@@ -3,14 +3,14 @@
 local _, R = ...
 if not R.apply then return end
 
-local db = FostercareRaidDB
+local db = RaidFramesDB
 local RAID, PARTY = {}, { "party1", "party2", "party3", "party4" }
 for i = 1, 40 do RAID[i] = "raid" .. i end
 -- While a member shows: only its own unit events (### frame:RegisterUnitEvent).
 local UNIT_EVENTS = { "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "UNIT_DISPLAYPOWER",
     "UNIT_NAME_UPDATE", "UNIT_CONNECTION", "UNIT_IN_RANGE_UPDATE", "UNIT_AURA_DELTA" }
 
-local grid = CreateFrame("Frame", "FostercareRaidFrame", UIParent)
+local grid = CreateFrame("Frame", "RaidFramesMain", UIParent)
 grid:SetMovable(true)
 grid:SetClampedToScreen(true)
 grid:SetFrameStrata("LOW")
@@ -35,7 +35,7 @@ end
 local function Get(g, m)
     buttons[g] = buttons[g] or {}
     if not buttons[g][m] then
-        buttons[g][m] = R.NewButton(grid, "FostercareRaidG" .. g .. "M" .. m)
+        buttons[g][m] = R.NewButton(grid, "RaidFramesG" .. g .. "M" .. m)
         Spot(buttons[g][m], g, m)
     end
     return buttons[g][m]

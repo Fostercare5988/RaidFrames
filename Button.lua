@@ -3,9 +3,9 @@
 local _, R = ...
 if not R.apply then return end -- no ClassicAPI: Core.lua said so
 
-local db = FostercareRaidDB
+local db = RaidFramesDB
 local Text = R.Text
-local BAR, WHITE = "Interface\\AddOns\\FostercareRaid\\img\\bar.tga", "Interface\\Buttons\\WHITE8X8"
+local BAR, WHITE = "Interface\\AddOns\\RaidFrames\\img\\bar.tga", "Interface\\Buttons\\WHITE8X8"
 local BACKDROP = { bgFile = WHITE, edgeFile = WHITE, edgeSize = 1, insets = { left = 0, right = 0, top = 0, bottom = 0 } }
 local GREEN = { r = 0.2, g = 0.9, b = 0.2 }
 local CROWNS = { "Interface\\GroupFrame\\UI-Group-AssistantIcon", "Interface\\GroupFrame\\UI-Group-LeaderIcon" }

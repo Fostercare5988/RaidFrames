@@ -4,7 +4,7 @@
 local _, R = ...
 if not R.apply then return end
 
-local db = FostercareRaidDB
+local db = RaidFramesDB
 local GAP, DARK = 2, { r = 0.15, g = 0.15, b = 0.15 } -- the gap between icons; a buff's border
 
 -- A heal over time or an absorb shield, by the spell's own effects: aura code 8

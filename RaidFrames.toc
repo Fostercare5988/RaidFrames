@@ -1,9 +1,9 @@
 ## Interface: 11200
-## Title: |cffff9e38FostercareRaid|r |cffffd6a8[Fostercare5988]|r
+## Title: |cffff9e38RaidFrames|r |cffffd6a8[Fostercare5988]|r
 ## Notes: One grid for party and raid: missing health, range, aggro, heals over time, buffs and debuffs
 ## Author: Fostercare5988
-## Version: 1.0.0
-## SavedVariablesPerCharacter: FostercareRaidDB
+## Version: 1.0.1
+## SavedVariablesPerCharacter: RaidFramesDB
 ## LoadSavedVariablesFirst: 1
 Core.lua
 Button.lua
