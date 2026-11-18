@@ -11,7 +11,7 @@ frames and the game's own group frames.
 - **Corners:** red on the member your enemy target attacks, and one for a heal
   over time or a shield.
 - **Buffs and debuffs** inside each member: heals and your own first,
-  dispellable debuffs first, `+N` for the rest.
+  the debuffs you can remove first, `+N` for the rest.
 - **Sizes:** width, height, scale and gaps, set on its page; a test grid of 40
   sample members to set them by.
 

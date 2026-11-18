@@ -22,7 +22,7 @@ local PAGE = {
     { "buffs", "Buffs", "Buff icons inside each member; heals and your own first." },
     { "buffCount", "Buffs per member", "At most this many; +N counts the rest.", 1, 8, 1, under = "buffs" },
     { "buffSize", "Buff size", "The size of the buff icons.", 8, 18, 1, under = "buffs" },
-    { "debuffs", "Debuffs", "Debuff icons inside each member; dispellable ones first." },
+    { "debuffs", "Debuffs", "Debuff icons inside each member; the ones you can remove first." },
     { "debuffCount", "Debuffs per member", "At most this many; +N counts the rest.", 1, 8, 1, under = "debuffs" },
     { "debuffSize", "Debuff size", "The size of the debuff icons.", 8, 18, 1, under = "debuffs" },
 }

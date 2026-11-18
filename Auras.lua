@@ -22,9 +22,19 @@ local function Heal(id)
     end
     return heals[id]
 end
-local function Dispellable(_, dispel) return dispel ~= nil end
+local slots, yours = {}, {}
+-- Debuffs you can dispel first, as Grid2 and VuhDo do: the spells of those
+-- that pass the RAID filter ("only debuffs that you can dispel", ### Filter parsing).
+local function Yours(id) return yours[id] == true end
+local function LearnYours(unit)
+    table.wipe(yours)
+    local _, count = C_UnitAuras.GetAuraSlots(unit, "HARMFUL|RAID", nil, nil, slots)
+    for i = 1, count do
+        local id = select(10, C_UnitAuras.UnitAuraBySlot(unit, slots[i]))
+        if id then yours[id] = true end
+    end
+end
 
-local slots = {}
 -- A member's auras of one kind into `list` (records reused): those `first`
 -- picks ahead, then the rest, each in the game's order, which puts your own
 -- first (### Aura order). One GetAuraSlots call (### C_UnitAuras.GetAuraSlots).
@@ -135,7 +145,7 @@ end
 -- Read the member's auras again and lay them out.
 function R.Auras(b)
     if db.buffs or db.hots then Read(b, "HELPFUL", b.buffs, Heal) else b.buffs.n = 0 end
-    if db.debuffs then Read(b, "HARMFUL", b.debuffs, Dispellable) else b.debuffs.n = 0 end
+    if db.debuffs then LearnYours(b.unit); Read(b, "HARMFUL", b.debuffs, Yours) else b.debuffs.n = 0 end
     R.Place(b)
 end
 
