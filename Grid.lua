@@ -134,7 +134,7 @@ local function Roster()
     grid:SetShown(rows > 0)
 end
 
--- Roster events come in bursts (a battleground filling): one pass, next frame.
+-- The leader and a loading screen have no roster event of their own: one pass, next frame.
 local function Soon()
     if not pending then pending = true; C_Timer.After(0, Roster) end
 end
@@ -147,14 +147,17 @@ grid:SetScript("OnEvent", function(_, e, unit, a2)
         elseif e == "UNIT_IN_RANGE_UPDATE" then R.Range(b, a2)
         elseif e == "UNIT_NAME_UPDATE" then R.Identity(b)
         elseif e == "UNIT_CONNECTION" then R.Health(b); R.Range(b, UnitInRange(unit))
-        else R.Power(b) end
+        elseif e == "UNIT_DISPLAYPOWER" then R.Power(b)
+        else R.Power(b, a2) end
     elseif e == "PLAYER_TARGET_CHANGED" or e == "UNIT_TARGET" then
         local hostile = Hostile()
         for _, member in pairs(byUnit) do R.Aggro(member, hostile) end
     elseif e == "RAID_TARGET_UPDATE" then
         for token, member in pairs(byUnit) do R.Mark(member, GetRaidTargetIndex(token)) end
+    elseif e == "GROUP_ROSTER_UPDATE" then
+        Roster() -- once in each frame the members changed (### GROUP_ROSTER_UPDATE event)
     else
-        Soon() -- the roster, the leader, a loading screen
+        Soon()
     end
 end)
 
@@ -214,7 +217,7 @@ end
 function R.apply.enabled()
     Own(db.enabled)
     if db.enabled then
-        for _, e in ipairs({ "PLAYER_ENTERING_WORLD", "RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED" }) do
+        for _, e in ipairs({ "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE" }) do
             grid:RegisterEvent(e)
         end
         return Roster()

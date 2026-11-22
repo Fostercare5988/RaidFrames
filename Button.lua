@@ -33,7 +33,9 @@ local function Paint(bar, c)
 end
 
 local function Fill(bar, value, max)
-    if bar.max ~= max then bar.max = max; bar:SetMinMaxValues(0, max) end
+    if bar.max ~= max then bar.max = max; bar:SetMinMaxValues(0, max)
+    elseif bar.value == value then return end
+    bar.value = value
     bar:SetValue(value)
 end
 
@@ -125,10 +127,14 @@ function R.Health(b)
         or UnitIsDead(unit) and DEAD or UnitHealthMissing(unit))
 end
 
-function R.Power(b)
+-- `token`: the event's powerType; the bar shows the unit's own power, so another
+-- one (the player's combo points, ### UNIT_POWER_UPDATE) changes nothing here.
+function R.Power(b, token)
+    local kind, shown = UnitPowerType(b.unit)
+    if token and token ~= shown then return end
     local max = UnitManaMax(b.unit)
     Fill(b.power, UnitMana(b.unit), max > 0 and max or 1)
-    Paint(b.power, ManaBarColor[UnitPowerType(b.unit)] or ManaBarColor[0])
+    Paint(b.power, ManaBarColor[kind] or ManaBarColor[0])
 end
 
 -- `inRange`: UNIT_IN_RANGE_UPDATE's, or UnitInRange's when the member shows.
