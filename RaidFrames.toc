@@ -2,7 +2,7 @@
 ## Title: |cffff9e38RaidFrames|r |cffffd6a8[Fostercare5988]|r
 ## Notes: One grid for party and raid: missing health, range, aggro, heals over time, buffs and debuffs
 ## Author: Fostercare5988
-## Version: 1.0.4
+## Version: 1.0.5
 ## SavedVariablesPerCharacter: RaidFramesDB
 ## LoadSavedVariablesFirst: 1
 Core.lua
