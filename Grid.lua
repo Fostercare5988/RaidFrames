@@ -156,6 +156,8 @@ grid:SetScript("OnEvent", function(_, e, unit, a2)
         for token, member in pairs(byUnit) do R.Mark(member, GetRaidTargetIndex(token)) end
     elseif e == "GROUP_ROSTER_UPDATE" then
         Roster() -- once in each frame the members changed (### GROUP_ROSTER_UPDATE event)
+        -- UNVERIFIED: that it also fires for a subgroup move and a promotion, as
+        -- RAID_ROSTER_UPDATE did (the doc says "members changed"): test in game
     else
         Soon()
     end
