@@ -66,7 +66,7 @@ local function NewIcon(b)
     icon.tex = icon:CreateTexture(nil, "ARTWORK")
     icon.tex:SetAllPoints(icon)
     icon.tex:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-    -- The client counts down (countdownForCooldowns; the Cooldown section).
+    -- The client counts down (the Cooldown section).
     icon.cd = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
     icon.cd:SetAllPoints(icon)
     icon.cd:SetReverse(true)
